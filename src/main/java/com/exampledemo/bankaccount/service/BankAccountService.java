@@ -36,7 +36,7 @@ public class BankAccountService {
         return BankAccountDto.of(acc);
     }
 
-    @Transactional
+    @Transactional(isolation=REPEATABLE_READ, rollbackFor = TransactionFailedException.class)
     public Boolean activateOrDeactivateAccount(Long id, Boolean isActive){
 
         BankAccount acc = bankAccountRepository.getOne(id);
@@ -46,12 +46,11 @@ public class BankAccountService {
         }
         catch (Exception ex){
             log.error("Error activating or deactivating account {}", id, ex);
-            return false;
+            throw new TransactionFailedException("Transaction failed during activating or deactivating", HttpStatus.CONFLICT);
         }
         return true;
     }
 
-    @Retryable(maxAttempts = 5)
     @Transactional(isolation=REPEATABLE_READ, rollbackFor = TransactionFailedException.class)
     public BankAccountDto changeBalance(Long id, BigInteger change){
         // -500 for decrease
