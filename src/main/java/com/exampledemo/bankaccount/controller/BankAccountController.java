@@ -1,5 +1,7 @@
 package com.exampledemo.bankaccount.controller;
 
+import com.exampledemo.bankaccount.dto.BankAccountChangeBalance;
+import com.exampledemo.bankaccount.dto.BankAccountChangeStatus;
 import com.exampledemo.bankaccount.dto.BankAccountDto;
 import com.exampledemo.bankaccount.service.BankAccountService;
 import org.springframework.http.HttpStatus;
@@ -27,8 +29,14 @@ public class BankAccountController {
     }
 
     @PostMapping("/{id}/change-status")
-    public ResponseEntity<Boolean> changeStatus(@PathVariable Long id, @RequestBody Boolean isActive){
-        Boolean result = bankAccountService.activateOrDeactivateAccount(id, isActive);
+    public ResponseEntity<Boolean> changeStatus(@PathVariable Long id, @RequestBody BankAccountChangeStatus isActive){
+        Boolean result = bankAccountService.activateOrDeactivateAccount(id, isActive.getIsActive());
         return new ResponseEntity<>(result, result ? HttpStatus.OK : HttpStatus.CONFLICT);
+    }
+
+    @PostMapping("/{id}/change-balance")
+    public ResponseEntity<BankAccountDto> changeBalance(@PathVariable Long id, @RequestBody BankAccountChangeBalance accountChangeBalance){
+        BankAccountDto result = bankAccountService.changeBalance(id, accountChangeBalance.getAmount(), accountChangeBalance.getReason());
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

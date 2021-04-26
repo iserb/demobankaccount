@@ -4,16 +4,19 @@ import com.exampledemo.bankaccount.dto.BankAccountDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.math.BigInteger;
 import java.time.Instant;
 
+@Entity
+@Table(name="bank_account")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="bank_account")
-public class BankAccount {
+@EntityListeners(AuditingEntityListener.class)
+public class BankAccount extends AbstractAuditedEntity<String> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +28,7 @@ public class BankAccount {
     BigInteger balance; //в копейках
     @Column(name="user_id")
     Long userId;
-    @Column(name="create_time")
-    Instant created = Instant.now();
-    @Column(name="update_time")
-    Instant updated = Instant.now();
+
     @Column(name="is_active")
     Boolean isActive;
 
