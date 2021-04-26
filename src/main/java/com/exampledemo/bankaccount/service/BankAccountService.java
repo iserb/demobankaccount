@@ -34,7 +34,7 @@ public class BankAccountService {
     }
 
     public BankAccountDto createAccount(BankAccountDto accountDto){
-        BankAccount acc = bankAccountRepository.saveAndFlush(BankAccount.fromDto(accountDto));
+        BankAccount acc = bankAccountRepository.save(BankAccount.fromDto(accountDto));
         return BankAccountDto.of(acc);
     }
 
